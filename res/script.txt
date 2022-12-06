@@ -1,0 +1,37 @@
+load res/techsupport.ppm ts
+
+brighten 66 ts tsbrighten
+brighten -66 ts tsdarken
+
+vertical-flip ts tsvert
+horizontal-flip ts tshori
+
+red-component ts tsred
+green-component ts tsgreen
+blue-component ts tsblue
+value-component ts tsvalue
+intensity-component ts tsintensity
+luma-component ts tsluma
+
+blur ts tsblur
+sharpen ts tssharp
+
+greyscale-luma ts tsgreyscaleluma
+sepia ts tssepia
+
+save res/techsupportbrighten.ppm tsbrighten
+save res/techsupportdarken.ppm tsdarken
+save res/techsupportvertical.ppm tsvert
+save res/techsupporthorizontal.ppm tshori
+save res/techsupportred.ppm tsred
+save res/techsupportgreen.ppm tsgreen
+save res/techsupportblue.ppm tsblue
+save res/techsupportvalue.ppm tsvalue
+save res/techsupportintensity.ppm tsintensity
+save res/techsupportluma.ppm tsluma
+save res/techsupportblur.bmp tsblur
+save res/techsupportsharpen.jpg tssharp
+save res/techsupportgreyscaleluma.png tsgreyscaleluma
+save res/techsupportsepia.jpeg tssepia
+
+q
