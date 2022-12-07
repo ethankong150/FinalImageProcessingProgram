@@ -112,6 +112,16 @@ public interface IPModel extends IPModelState {
    * @param percentageOfWidth percentage of original width
    * @param imgName name of image saved to the model
    * @param rename new name for image created
+   * @throws IllegalArgumentException when percentages given aren't between 0 and 100
    */
-  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename);
+  void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename)
+          throws IllegalArgumentException;
+
+  /**
+   *
+   * @param maskPath
+   * @param imgName
+   * @throws IllegalArgumentException
+   */
+  void setMaskImage(String maskPath, String imgName) throws IllegalArgumentException;
 }

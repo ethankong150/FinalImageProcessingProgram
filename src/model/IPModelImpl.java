@@ -466,7 +466,7 @@ public class IPModelImpl implements IPModel {
     }
   }
 
-  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename) {
+  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename) throws IllegalArgumentException {
     imageExists(imgName);
     if (percentageOfHeight >= 100 || percentageOfWidth >= 100 || percentageOfHeight <= 0 || percentageOfWidth <= 0) {
       throw new IllegalArgumentException("Input numbers between 0 and 100!");
@@ -475,7 +475,7 @@ public class IPModelImpl implements IPModel {
     int width = this.getWidth(imgName);
     int newHeight = (int) ((double) (height * percentageOfHeight) / 100.00);
     int newWidth = (int) ((double) (width * percentageOfWidth) / 100.00);
-    
+
     PixelInfo[][] newImage = new PixelInfo[newHeight][newWidth];
 
     for (int i = 0; i < newHeight; i++) {
