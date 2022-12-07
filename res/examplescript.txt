@@ -1,3 +1,0 @@
-load res/image1.ppm i1
-vertical-flip i1 i1vert
-sepia i1vert i1vertsepia
