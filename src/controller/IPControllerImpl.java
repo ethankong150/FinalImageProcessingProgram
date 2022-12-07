@@ -16,6 +16,7 @@ import controller.commands.Flip;
 import controller.commands.IPCommand;
 import controller.commands.Load;
 import controller.commands.Matrices;
+import controller.commands.Partial;
 import controller.commands.Save;
 import model.IPModel;
 import view.IPView;
@@ -189,7 +190,14 @@ public class IPControllerImpl implements IPController {
         new ColorTransformation(Matrices.greyscaleluma, getStringInput(sc), getStringInput(sc)));
     this.commands.put("sepia", sc ->
         new ColorTransformation(Matrices.sepia, getStringInput(sc), getStringInput(sc)));
-    this.commands.put("downsize", sc -> new Downsize(getIntInput(sc), getIntInput(sc),
+    this.commands.put("downsize", sc ->
+        new Downsize(getIntInput(sc), getIntInput(sc),
             getStringInput(sc), getStringInput(sc)));
+    this.commands.put("partial-red-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Red, imgName, rename), imgName, rename);
+    });
   }
 }
