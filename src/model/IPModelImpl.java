@@ -24,6 +24,7 @@ import static model.IPModelState.PixelComponents.Red;
 public class IPModelImpl implements IPModel {
   
   private final Map<String, PixelInfo[][]> addedImages;
+  private PixelInfo[][] maskImage;
   
   /**
    * This first constructor takes no arguments and calls the abstract constructor to create
@@ -31,6 +32,7 @@ public class IPModelImpl implements IPModel {
    */
   public IPModelImpl() {
     this.addedImages = new HashMap<>();
+    this.maskImage = null;
   }
   
   @Override
@@ -452,5 +454,36 @@ public class IPModelImpl implements IPModel {
     if (!this.addedImages.containsKey(imgName)) {
       throw new IllegalArgumentException(imgName + " doesn't exist");
     }
+  }
+  
+  // main method for partial image manipulation --
+  public void setMaskImage(String path, String imgName) {
+    // upload image and turn it into 2d array
+    // check that pixels are either white or black, else blow up
+    // check that height and width of mask image is same as height and width of imgName, else blow up
+    // set this.maskImage to this new image
+  }
+  
+  private boolean maskImageWhite(int row, int col) {
+    // if the mask image at the given row and col is white, return true
+    return false;
+  }
+  
+  private boolean maskImageBlack(int row, int col) {
+    // if the mask image at the given row and col is black, return true
+    return false;
+  }
+  
+  // in every method: for every pixel, if this pixel in the mask image is white, do the getOGPixelFromImage method
+  
+  private void resetMaskImage() {
+    // we need to reset the mask image to null after a partial image manipulation command is finished
+    this.maskImage = null;
+  }
+  
+  private PixelInfo getOGPixelFromImage(String imgName, int row, int col) {
+    // return the og pixel from the image
+    // in the event that the pixel is white, we need to include the original, unedited pixel to the new pixel
+    return null;
   }
 }
