@@ -10,6 +10,7 @@ import java.util.function.Function;
 import controller.commands.Brighten;
 import controller.commands.ColorTransformation;
 import controller.commands.Component;
+import controller.commands.Downsize;
 import controller.commands.Filter;
 import controller.commands.Flip;
 import controller.commands.IPCommand;
@@ -188,5 +189,7 @@ public class IPControllerImpl implements IPController {
         new ColorTransformation(Matrices.greyscaleluma, getStringInput(sc), getStringInput(sc)));
     this.commands.put("sepia", sc ->
         new ColorTransformation(Matrices.sepia, getStringInput(sc), getStringInput(sc)));
+    this.commands.put("downsize", sc -> new Downsize(getIntInput(sc), getIntInput(sc),
+            getStringInput(sc), getStringInput(sc)));
   }
 }

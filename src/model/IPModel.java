@@ -104,4 +104,6 @@ public interface IPModel extends IPModelState {
    */
   void colorTransformation(double[][] kernel, String imgName, String rename)
       throws IllegalArgumentException;
+
+  public void downsize(int newHeight, int newWidth, String imgName, String rename);
 }
