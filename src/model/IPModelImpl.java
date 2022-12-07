@@ -466,53 +466,51 @@ public class IPModelImpl implements IPModel {
     }
   }
 
-  public void downsize(int newHeight, int newWidth, String imgName, String rename) {
+  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename) {
     imageExists(imgName);
-    if (newHeight >= 100 || newWidth >= 100) {
-      throw new IllegalArgumentException("Cannot downsize by a percentage greater than 100");
+    if (percentageOfHeight >= 100 || percentageOfWidth >= 100 || percentageOfHeight <= 0 || percentageOfWidth <= 0) {
+      throw new IllegalArgumentException("Input numbers between 0 and 100!");
     }
     int height = this.getHeight(imgName);
     int width = this.getWidth(imgName);
-    int newImageHeight = (int) ((double) (height * newHeight) / 100.00);
-    int newImageWidth = (int) ((double) (width * newWidth) / 100.00);
-    PixelInfo[][] newImage = new PixelInfo[newImageHeight][newImageWidth];
+    int newHeight = (int) ((double) (height * percentageOfHeight) / 100.00);
+    int newWidth = (int) ((double) (width * percentageOfWidth) / 100.00);
+    
+    PixelInfo[][] newImage = new PixelInfo[newHeight][newWidth];
 
-    for (int i = 0; i < newImageHeight; i++) {
-      for (int j = 0; j < newImageWidth; j++) {
+    for (int i = 0; i < newHeight; i++) {
+      for (int j = 0; j < newWidth; j++) {
 
-        //PixelClass pixel1 = new PixelClass();
+        double currX = i * (100.0 / percentageOfHeight);
+        double currY = j * (100.0 / percentageOfWidth);
 
-        double x = i * (100.0 / newHeight);
-        double y = j * (100.0 / newWidth);
-
-        //not sure how the comparison here works
-        if (x == (int) x || y == (int) y) {
-          newImage[i][j] = new PixelInfo(this.getPixelInfo(imgName, (int) x, (int) y).get(Red),
-                  this.getPixelInfo(imgName, (int) x, (int) y).get(Green),
-                  this.getPixelInfo(imgName, (int) x, (int) y).get(Blue),
-                  this.getPixelInfo(imgName, (int) x, (int) y).get(Max));
+        if (currX == (int) currX || currY == (int) currY) {
+          newImage[i][j] = new PixelInfo(this.getPixelInfo(imgName, (int) currX, (int) currY).get(Red),
+                  this.getPixelInfo(imgName, (int) currX, (int) currY).get(Green),
+                  this.getPixelInfo(imgName, (int) currX, (int) currY).get(Blue),
+                  this.getPixelInfo(imgName, (int) currX, (int) currY).get(Max));
         } else {
 
           PixelInfo pixelA = new PixelInfo(
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.floor(y)).get(Red),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.floor(y)).get(Blue),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.floor(y)).get(Green),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.floor(y)).get(Max));
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Red),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Blue),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Green),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Max));
           PixelInfo pixelB = new PixelInfo(
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.floor(y)).get(Red),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.floor(y)).get(Blue),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.floor(y)).get(Green),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.floor(y)).get(Max));
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.floor(currY)).get(Red),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.floor(currY)).get(Blue),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.floor(currY)).get(Green),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.floor(currY)).get(Max));
           PixelInfo pixelC = new PixelInfo(
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.ceil(y)).get(Red),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.ceil(y)).get(Blue),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.ceil(y)).get(Green),
-                  this.getPixelInfo(imgName, (int) Math.floor(x), (int) Math.ceil(y)).get(Max));
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.ceil(currY)).get(Red),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.ceil(currY)).get(Blue),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.ceil(currY)).get(Green),
+                  this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.ceil(currY)).get(Max));
           PixelInfo pixelD = new PixelInfo(
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.ceil(y)).get(Red),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.ceil(y)).get(Blue),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.ceil(y)).get(Green),
-                  this.getPixelInfo(imgName, (int) Math.ceil(x), (int) Math.ceil(y)).get(Max));
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.ceil(currY)).get(Red),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.ceil(currY)).get(Blue),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.ceil(currY)).get(Green),
+                  this.getPixelInfo(imgName, (int) Math.ceil(currX), (int) Math.ceil(currY)).get(Max));
 
           //ca
           int pAr = pixelA.getPixelInfo().get(Red);
@@ -535,17 +533,17 @@ public class IPModelImpl implements IPModel {
           int pDb = pixelD.getPixelInfo().get(Blue);
 
 
-          double mRed = ((pBr * (x - Math.floor(x))) + (pAr * (Math.ceil(x) - x)));
-          double nRed = ((pDr * (x - Math.floor(x))) + (pCr * (Math.ceil(x) - x)));
-          double newRed = ((nRed * (y - Math.floor(y))) + (mRed * (Math.ceil(y) - y)));
+          double mRed = ((pBr * (currX - Math.floor(currX))) + (pAr * (Math.ceil(currX) - currX)));
+          double nRed = ((pDr * (currX - Math.floor(currX))) + (pCr * (Math.ceil(currX) - currX)));
+          double newRed = ((nRed * (currY - Math.floor(currY))) + (mRed * (Math.ceil(currY) - currY)));
 
-          double mGreen = ((pBg * (x - Math.floor(x))) + (pAg * (Math.ceil(x) - x)));
-          double nGreen = ((pDg * (x - Math.floor(x))) + (pCg * (Math.ceil(x) - x)));
-          double newGreen = ((nGreen * (y - Math.floor(y))) + (mGreen * (Math.ceil(y) - y)));
+          double mGreen = ((pBg * (currX - Math.floor(currX))) + (pAg * (Math.ceil(currX) - currX)));
+          double nGreen = ((pDg * (currX - Math.floor(currX))) + (pCg * (Math.ceil(currX) - currX)));
+          double newGreen = ((nGreen * (currY - Math.floor(currY))) + (mGreen * (Math.ceil(currY) - currY)));
 
-          double mBlue = ((pBb * (x - Math.floor(x))) + (pAb * (Math.ceil(x) - x)));
-          double nBlue = ((pDb * (x - Math.floor(x))) + (pCb * (Math.ceil(x) - x)));
-          double newBlue = ((nBlue * (y - Math.floor(y))) + (mBlue * (Math.ceil(y) - y)));
+          double mBlue = ((pBb * (currX - Math.floor(currX))) + (pAb * (Math.ceil(currX) - currX)));
+          double nBlue = ((pDb * (currX - Math.floor(currX))) + (pCb * (Math.ceil(currX) - currX)));
+          double newBlue = ((nBlue * (currY - Math.floor(currY))) + (mBlue * (Math.ceil(currY) - currY)));
 
           newImage[i][j] = new PixelInfo((int) newRed, (int) newGreen, (int) newBlue, 255);
         }

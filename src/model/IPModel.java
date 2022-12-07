@@ -105,5 +105,13 @@ public interface IPModel extends IPModelState {
   void colorTransformation(double[][] kernel, String imgName, String rename)
       throws IllegalArgumentException;
 
-  public void downsize(int newHeight, int newWidth, String imgName, String rename);
+  /**
+   * Creates a smaller version of desired image with desired dimensions.
+   *
+   * @param percentageOfHeight percentage of original height
+   * @param percentageOfWidth percentage of original width
+   * @param imgName name of image saved to the model
+   * @param rename new name for image created
+   */
+  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename);
 }
