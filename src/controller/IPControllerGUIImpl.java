@@ -7,6 +7,7 @@ import java.util.function.Function;
 import controller.commands.Brighten;
 import controller.commands.ColorTransformation;
 import controller.commands.Component;
+import controller.commands.Downsize;
 import controller.commands.Filter;
 import controller.commands.Flip;
 import controller.commands.IPCommand;
@@ -118,7 +119,7 @@ public class IPControllerGUIImpl implements IPControllerGUI {
    *                                  is not an integer, or if the next input is empty (indicating
    *                                  the command was canceled).
    */
-  private int parseAmountForBrighten(String s) throws IllegalArgumentException {
+  private int parseInt(String s) throws IllegalArgumentException {
     if (s == null) {
       throw new IllegalArgumentException("command was canceled");
     }
@@ -139,9 +140,9 @@ public class IPControllerGUIImpl implements IPControllerGUI {
     this.commands.put("save", str ->
         new SaveGUI(str, this.thisImage));
     this.commands.put("brighten", str ->
-        new Brighten(parseAmountForBrighten(str), this.thisImage, this.thisImage));
+        new Brighten(parseInt(str), this.thisImage, this.thisImage));
     this.commands.put("darken", str ->
-        new Brighten(parseAmountForBrighten(str) * -1, this.thisImage, this.thisImage));
+        new Brighten(parseInt(str) * -1, this.thisImage, this.thisImage));
     this.commands.put("vertical-flip", str ->
         new Flip(true, this.thisImage, this.thisImage));
     this.commands.put("horizontal-flip", str ->
@@ -166,5 +167,14 @@ public class IPControllerGUIImpl implements IPControllerGUI {
         new ColorTransformation(Matrices.greyscaleluma, this.thisImage, this.thisImage));
     this.commands.put("sepia", str ->
         new ColorTransformation(Matrices.sepia, this.thisImage, this.thisImage));
+    this.commands.put("downsize", str -> {
+      String[] percentHeightWidth = str.split("\\s+");
+      if (percentHeightWidth.length != 2)  {
+        throw new IllegalArgumentException("invalid inputs for downsizing");
+      }
+      int newHeight = parseInt(percentHeightWidth[0]);
+      int newWidth = parseInt(percentHeightWidth[1]);
+      return new Downsize(newHeight, newWidth, this.thisImage, this.thisImage);
+    });
   }
 }

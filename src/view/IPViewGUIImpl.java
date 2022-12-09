@@ -47,7 +47,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
     String[] buttons = new String[]{"load", "save", "brighten", "darken", "vertical-flip",
         "horizontal-flip", "red-component", "green-component", "blue-component",
         "value-component", "intensity-component", "luma-component", "blur",
-        "sharpen", "greyscale-luma", "sepia"};
+        "sharpen", "greyscale-luma", "sepia", "downsize"};
     
     // set up JFrame
     this.setTitle("IP Program");
@@ -83,7 +83,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
     
     // place panel to bottom right (for buttons)
     JPanel buttonsPanel = new JPanel();
-    buttonsPanel.setLayout(new GridLayout(4, 4));
+//    buttonsPanel.setLayout(new GridLayout(4, 4));
     rightPanel.add(buttonsPanel);
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,6 +149,12 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
       case "darken":
         specialArgument = JOptionPane.showInputDialog("Enter amount to darken:");
         break;
+      case "downsize":
+        String newHeight = JOptionPane.showInputDialog("Enter percentage of this image's height to " +
+            "downsize this image to (must be between 0 and 100):");
+        String newWidth = JOptionPane.showInputDialog("Enter percentage of this image's width to " +
+            "downsize this image to (must be between 0 and 100):");
+        specialArgument = newHeight + " " + newWidth;
       default:
         break;
     }
