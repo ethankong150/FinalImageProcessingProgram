@@ -4,8 +4,8 @@ import model.IPModel;
 
 public class Downsize extends AIPCommand{
 
-  int newHeight;
-  int newWidth;
+  private final int newHeight;
+  private final int newWidth;
   /**
    * This first constructor takes two strings and initializes them as fields in an IPCommand model.
    *
