@@ -44,6 +44,7 @@ public class IPModelImpl implements IPModel {
       throw new IllegalArgumentException("null pixels arraylist given");
     }
     this.addedImages.put(imgName, imgPixels);
+    this.resetMaskImage();
   }
   
   @Override
@@ -78,7 +79,6 @@ public class IPModelImpl implements IPModel {
       }
     }
     this.addImage(rename, greyScaledImage);
-    this.resetMaskImage();
   }
   
   @Override
@@ -120,20 +120,29 @@ public class IPModelImpl implements IPModel {
     
     // for each row
     for (int i = 0; i < this.getHeight(imgName); i++) {
+      // for each column
       for (int j = 0; j < this.getWidth(imgName); j++) {
-        // get the pixel info of this pixel from the copy
-        Map<PixelComponents, Integer> pixelInfoBrightened = this.getPixelInfo(imgName, i, j);
-        // change the red, green, and blue values by the given amount if it is between 0 and 255
-        // (else round to the nearest bound)
-        int redBrightened = rgbInBounds(pixelInfoBrightened.get(Red) + amount,
-            pixelInfoBrightened);
-        int greenBrightened = rgbInBounds(pixelInfoBrightened.get(Green) + amount,
-            pixelInfoBrightened);
-        int blueBrightened = rgbInBounds(pixelInfoBrightened.get(Blue) + amount,
-            pixelInfoBrightened);
-        // create new pixel with new R G B values and put it into brightenedImage[][]
-        brightenedImage[i][j] = new PixelInfo(redBrightened, greenBrightened, blueBrightened,
-            pixelInfoBrightened.get(Max));
+        
+        // is mask image null or is this mask image's pixel black
+        if (this.maskImage == null || this.maskImageBlack(i, j)) {
+          // get the pixel info of this pixel from the copy
+          Map<PixelComponents, Integer> pixelInfoBrightened = this.getPixelInfo(imgName, i, j);
+          // change the red, green, and blue values by the given amount if it is between 0 and 255
+          // (else round to the nearest bound)
+          int redBrightened = rgbInBounds(pixelInfoBrightened.get(Red) + amount,
+              pixelInfoBrightened);
+          int greenBrightened = rgbInBounds(pixelInfoBrightened.get(Green) + amount,
+              pixelInfoBrightened);
+          int blueBrightened = rgbInBounds(pixelInfoBrightened.get(Blue) + amount,
+              pixelInfoBrightened);
+          // create new pixel with new R G B values and put it into brightenedImage[][]
+          brightenedImage[i][j] = new PixelInfo(redBrightened, greenBrightened, blueBrightened,
+              pixelInfoBrightened.get(Max));
+        } else {
+          Map<PixelComponents, Integer> ogPixelInfo = this.getPixelInfo(imgName, i, j);
+          brightenedImage[i][j] = new PixelInfo(ogPixelInfo.get(Red), ogPixelInfo.get(Green),
+              ogPixelInfo.get(Blue), ogPixelInfo.get(Max));
+        }
       }
     }
     this.addImage(rename, brightenedImage);
@@ -321,7 +330,9 @@ public class IPModelImpl implements IPModel {
   @Override
   public void filter(double[][] kernel, String imgName, String rename)
       throws IllegalArgumentException {
+    
     imageExists(imgName);
+    
     if (kernel.length % 2 == 0 || kernel[0].length % 2 == 0) {
       throw new IllegalArgumentException("Input a valid kernel!");
     }
@@ -331,12 +342,19 @@ public class IPModelImpl implements IPModel {
     for (int i = 0; i < this.getHeight(imgName); i++) {
       for (int j = 0; j < this.getWidth(imgName); j++) {
         
-        int filteredMax = this.getPixelInfo(imgName, i, j).get(Max);
-        int filteredRed = filterPixel(Red, kernel, i, j, filteredMax, imgName);
-        int filteredGreen = filterPixel(Green, kernel, i, j, filteredMax, imgName);
-        int filteredBlue = filterPixel(Blue, kernel, i, j, filteredMax, imgName);
-        
-        filteredImage[i][j] = new PixelInfo(filteredRed, filteredGreen, filteredBlue, filteredMax);
+        if (this.maskImage == null || this.maskImageBlack(i, j)) {
+          int filteredMax = this.getPixelInfo(imgName, i, j).get(Max);
+          int filteredRed = filterPixel(Red, kernel, i, j, filteredMax, imgName);
+          int filteredGreen = filterPixel(Green, kernel, i, j, filteredMax, imgName);
+          int filteredBlue = filterPixel(Blue, kernel, i, j, filteredMax, imgName);
+          
+          filteredImage[i][j] = new PixelInfo(filteredRed, filteredGreen, filteredBlue, filteredMax);
+          
+        } else {
+          Map<PixelComponents, Integer> ogPixelInfo = this.getPixelInfo(imgName, i, j);
+          filteredImage[i][j] = new PixelInfo(ogPixelInfo.get(Red), ogPixelInfo.get(Green),
+              ogPixelInfo.get(Blue), ogPixelInfo.get(Max));
+        }
       }
     }
     this.addImage(rename, filteredImage);
@@ -381,19 +399,26 @@ public class IPModelImpl implements IPModel {
     for (int i = 0; i < transformedImage.length; i++) {
       for (int j = 0; j < transformedImage[0].length; j++) {
         
-        int transformedMax = this.getPixelInfo(imgName, i, j).get(Max);
+        if (this.maskImage == null || this.maskImageBlack(i, j)) {
+          int transformedMax = this.getPixelInfo(imgName, i, j).get(Max);
+  
+          int currRedVal = this.getPixelInfo(imgName, i, j).get(Red);
+          int currGreenVal = this.getPixelInfo(imgName, i, j).get(Green);
+          int currBlueVal = this.getPixelInfo(imgName, i, j).get(Blue);
+  
+          int[] currRGB = {currRedVal, currGreenVal, currBlueVal};
+  
+          int newRed = valueTransform(kernel[0], currRGB);
+          int newGreen = valueTransform(kernel[1], currRGB);
+          int newBlue = valueTransform(kernel[2], currRGB);
+  
+          transformedImage[i][j] = new PixelInfo(newRed, newGreen, newBlue, transformedMax);
+        } else {
+          Map<PixelComponents, Integer> ogPixelInfo = this.getPixelInfo(imgName, i, j);
+          transformedImage[i][j] = new PixelInfo(ogPixelInfo.get(Red), ogPixelInfo.get(Green),
+              ogPixelInfo.get(Blue), ogPixelInfo.get(Max));
+        }
         
-        int currRedVal = this.getPixelInfo(imgName, i, j).get(Red);
-        int currGreenVal = this.getPixelInfo(imgName, i, j).get(Green);
-        int currBlueVal = this.getPixelInfo(imgName, i, j).get(Blue);
-        
-        int[] currRGB = {currRedVal, currGreenVal, currBlueVal};
-        
-        int newRed = valueTransform(kernel[0], currRGB);
-        int newGreen = valueTransform(kernel[1], currRGB);
-        int newBlue = valueTransform(kernel[2], currRGB);
-        
-        transformedImage[i][j] = new PixelInfo(newRed, newGreen, newBlue, transformedMax);
       }
     }
     this.addImage(rename, transformedImage);
@@ -466,31 +491,31 @@ public class IPModelImpl implements IPModel {
     }
   }
   
-  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename) throws IllegalArgumentException {
-    imageExists(imgName);
+  public void downsize(int percentageOfHeight, int percentageOfWidth, String imgName, String rename)
+      throws IllegalArgumentException {
+    
+    this.imageExists(imgName);
+    
     if (percentageOfHeight >= 100 || percentageOfWidth >= 100 || percentageOfHeight <= 0 || percentageOfWidth <= 0) {
       throw new IllegalArgumentException("Input numbers between 0 and 100!");
     }
-    int height = this.getHeight(imgName);
-    int width = this.getWidth(imgName);
-    int newHeight = (int) ((double) (height * percentageOfHeight) / 100.00);
-    int newWidth = (int) ((double) (width * percentageOfWidth) / 100.00);
     
-    PixelInfo[][] newImage = new PixelInfo[newHeight][newWidth];
+    int newHeight = this.getHeight(imgName) * percentageOfHeight / 100;
+    int newWidth = this.getWidth(imgName) * percentageOfWidth / 100;
+    
+    PixelInfo[][] downImg = new PixelInfo[newHeight][newWidth];
     
     for (int i = 0; i < newHeight; i++) {
       for (int j = 0; j < newWidth; j++) {
         
-        double currX = i * (100.0 / percentageOfHeight);
-        double currY = j * (100.0 / percentageOfWidth);
+        double currX = i * (100 / percentageOfHeight) * 1.0;
+        double currY = j * (100 / percentageOfWidth) * 1.0;
         
         if (currX == (int) currX || currY == (int) currY) {
-          newImage[i][j] = new PixelInfo(this.getPixelInfo(imgName, (int) currX, (int) currY).get(Red),
-              this.getPixelInfo(imgName, (int) currX, (int) currY).get(Green),
-              this.getPixelInfo(imgName, (int) currX, (int) currY).get(Blue),
-              this.getPixelInfo(imgName, (int) currX, (int) currY).get(Max));
+          Map<PixelComponents, Integer> thisPixel = this.getPixelInfo(imgName, (int) currX, (int) currY);
+          downImg[i][j] = new PixelInfo(thisPixel.get(Red), thisPixel.get(Green),
+              thisPixel.get(Blue), thisPixel.get(Max));
         } else {
-          
           PixelInfo pixelA = new PixelInfo(
               this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Red),
               this.getPixelInfo(imgName, (int) Math.floor(currX), (int) Math.floor(currY)).get(Blue),
@@ -545,11 +570,11 @@ public class IPModelImpl implements IPModel {
           double nBlue = ((pDb * (currX - Math.floor(currX))) + (pCb * (Math.ceil(currX) - currX)));
           double newBlue = ((nBlue * (currY - Math.floor(currY))) + (mBlue * (Math.ceil(currY) - currY)));
           
-          newImage[i][j] = new PixelInfo((int) newRed, (int) newGreen, (int) newBlue, 255);
+          downImg[i][j] = new PixelInfo((int) newRed, (int) newGreen, (int) newBlue, 255);
         }
       }
     }
-    this.addedImages.put(rename, newImage);
+    this.addedImages.put(rename, downImg);
   }
   
   // main method for partial image manipulation --
@@ -581,9 +606,6 @@ public class IPModelImpl implements IPModel {
         int thisMaskPixelRed = thisMaskPixel.get(Red);
         int thisMaskPixelGreen = thisMaskPixel.get(Green);
         int thisMaskPixelBlue = thisMaskPixel.get(Blue);
-        System.out.println(thisMaskPixelRed);
-        System.out.println(thisMaskPixelGreen);
-        System.out.println(thisMaskPixelBlue);
         
         if (!((thisMaskPixelRed == 0 && thisMaskPixelGreen == 0 && thisMaskPixelBlue == 0)
             || (thisMaskPixelRed == 255 && thisMaskPixelGreen == 255 && thisMaskPixelBlue == 255))) {
