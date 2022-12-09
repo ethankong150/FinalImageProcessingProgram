@@ -1201,6 +1201,32 @@ public class IPControllerImplTest {
   }
   
   @Test
+  public void testPartial() {
+    this.m1.load("res/image1.png",  "image1");
+    
+    makeController("partial-red-component res/image1mask.png image1 ipartial q").startIP();
+  
+    for (int i = 0; i < this.m1.getHeight("ipartial"); i++) {
+      for (int j = 0; j < this.m1.getWidth("ipartial"); j++) {
+        Map<PixelComponents, Integer> thisPixel = this.m1.getPixelInfo("ipartial", i, j);
+        int red = thisPixel.get(Red);
+        int green = thisPixel.get(Green);
+        int blue = thisPixel.get(Blue);
+      
+        if (j == 0) {
+          assertEquals(red, 0);
+          assertEquals(green, 0);
+          assertEquals(blue, 255);
+        } else {
+          assertEquals(red, 255);
+          assertEquals(green, 255);
+          assertEquals(blue, 255);
+        }
+      }
+    }
+  }
+  
+  @Test
   public void testDealingWithBadInputs() {
     makeController("wow this is nothing and should be ignored but i have decided" +
         " to load res/image1.ppm image1 q").startIP();

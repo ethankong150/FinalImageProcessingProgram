@@ -2102,4 +2102,138 @@ public class IPModelImplTest {
       }
     }
   }
+  
+  // downsize
+  @Test
+  public void testDownsize1() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(67, 50, "image1", "image1down");
+    
+    assertEquals(this.m1.getHeight("image1down"), 2);
+    assertEquals(this.m1.getWidth("image1down"), 1);
+    
+    for (int i = 0; i < this.m1.getHeight("image1down"); i++) {
+      for (int j = 0; j < this.m1.getWidth("image1down"); j++) {
+        Map<PixelComponents, Integer> thisPixel = this.m1.getPixelInfo("image1down", i, j);
+        int red = thisPixel.get(Red);
+        int green = thisPixel.get(Green);
+        int blue = thisPixel.get(Blue);
+        assertEquals(red, 0);
+        assertEquals(green, 0);
+        assertEquals(blue, 255);
+      }
+    }
+  }
+  
+  @Test
+  public void testDownsize2() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(66, 50, "image1", "image1down");
+    
+    assertEquals(this.m1.getHeight("image1down"), 1);
+    assertEquals(this.m1.getWidth("image1down"), 1);
+  
+    for (int i = 0; i < this.m1.getHeight("image1down"); i++) {
+      for (int j = 0; j < this.m1.getWidth("image1down"); j++) {
+        Map<PixelComponents, Integer> thisPixel = this.m1.getPixelInfo("image1down", i, j);
+        int red = thisPixel.get(Red);
+        int green = thisPixel.get(Green);
+        int blue = thisPixel.get(Blue);
+        assertEquals(red, 0);
+        assertEquals(green, 0);
+        assertEquals(blue, 255);
+      }
+    }
+  }
+  
+  @Test
+  public void testDownsize3() {
+    this.m1.load("res/techsupport.ppm", "ts");
+    this.m1.downsize(50, 50, "ts", "tsdown");
+    
+    assertEquals(this.m1.getHeight("ts"), 188);
+    assertEquals(this.m1.getWidth("ts"), 250);
+  
+    assertEquals(this.m1.getHeight("tsdown"), 94);
+    assertEquals(this.m1.getWidth("tsdown"), 125);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testDownsizeIAE1() {
+    this.m1.downsize(50, 50, "lol", "whatever");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testDownsizeIAE2() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(0, 50, "image1", "image1down");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testDownsizeIAE3() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(-1, 50, "image1", "image1down");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testDownsizeIAE4() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(50, 0, "image1", "image1down");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testDownsizeIAE5() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.downsize(50, -50, "image1", "image1down");
+  }
+  
+  // setMaskImage
+  @Test
+  public void testSetMaskImage() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.setMaskImage("res/image1mask.png", "image1");
+    this.m1.greyscale(Red, "image1", "image1partred");
+    
+    for (int i = 0; i < this.m1.getHeight("image1partred"); i++) {
+      for (int j = 0; j < this.m1.getWidth("image1partred"); j++) {
+        Map<PixelComponents, Integer> thisPixel = this.m1.getPixelInfo("image1partred", i, j);
+        int red = thisPixel.get(Red);
+        int green = thisPixel.get(Green);
+        int blue = thisPixel.get(Blue);
+        
+        if (j == 0) {
+          assertEquals(red, 0);
+          assertEquals(green, 0);
+          assertEquals(blue, 255);
+        } else {
+          assertEquals(red, 255);
+          assertEquals(green, 255);
+          assertEquals(blue, 255);
+        }
+      }
+    }
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testSetMaskImageIAE1() {
+    this.m1.setMaskImage("res/image1mask.png", "image1");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testSetMaskImageIAE2() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.setMaskImage("whoops", "image1");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testSetMaskImageIAE3() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.setMaskImage("res/techsupport.png", "image1");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testSetMaskImageIAE4() {
+    this.m1.addImage("image1", this.i1);
+    this.m1.setMaskImage("res/image1dupe.png", "image1");
+  }
 }

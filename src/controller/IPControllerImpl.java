@@ -199,5 +199,66 @@ public class IPControllerImpl implements IPController {
       String rename = getStringInput(sc);
       return new Partial(maskPath, new Component(Red, imgName, rename), imgName, rename);
     });
+    this.commands.put("partial-green-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Green, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-blue-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Blue, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-value-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Value, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-intensity-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Intensity, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-luma-component", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Component(Luma, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-brighten", sc -> {
+      String maskPath = getStringInput(sc);
+      int amount = getIntInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Brighten(amount, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-blur", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Filter(Matrices.blur, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-sharpen", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new Filter(Matrices.sharpen, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-greyscale-luma", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new ColorTransformation(Matrices.greyscaleluma, imgName, rename), imgName, rename);
+    });
+    this.commands.put("partial-sepia", sc -> {
+      String maskPath = getStringInput(sc);
+      String imgName = getStringInput(sc);
+      String rename = getStringInput(sc);
+      return new Partial(maskPath, new ColorTransformation(Matrices.sepia, imgName, rename), imgName, rename);
+    });
   }
 }
