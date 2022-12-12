@@ -192,6 +192,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
         
         break;
       default:
+        this.controllerGUI.commandHandler(command, specialArgument);
         break;
     }
     
