@@ -617,7 +617,8 @@ public class IPModelImpl implements IPModel {
     // set this.maskImage to the potentialMask
     this.maskImage = potentialMask;
   }
-  
+
+  // checks if a pixel is black (perfect black 0 0 0)
   private boolean maskImageBlack(int row, int col) {
     Map<PixelComponents, Integer> thisPixel = this.maskImage[row][col].getPixelInfo();
     int thisMaskPixelRed = thisPixel.get(Red);
@@ -625,9 +626,9 @@ public class IPModelImpl implements IPModel {
     int thisMaskPixelBlue = thisPixel.get(Blue);
     return (thisMaskPixelRed == 0 && thisMaskPixelGreen == 0 && thisMaskPixelBlue == 0);
   }
-  
+
+  // resets the mask image to null after a partial image manipulation command is finished
   private void resetMaskImage() {
-    // we need to reset the mask image to null after a partial image manipulation command is finished
     this.maskImage = null;
   }
 }
