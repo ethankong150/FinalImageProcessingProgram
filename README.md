@@ -6,6 +6,15 @@ This is Ryan Cheung and Ethan Kong's image processing program that allows users 
 images in similar ways to photoshop. After edits are done, the user is able to save their new image
 onto their computer! This program follows a standard Model View Controller (MVC) design pattern
 coupled with the command design pattern that allows for minimal coupling between classes.
+<br>________________________________________________________________________________________________
+
+#### Changes made for Assignment 8:
+
+- An additional field (maskImage) added to the IPModelImpl for partial image transformation functionality
+   - This allows for all color changing commands to have the partial image transformation functionality 
+- Added support for downsizing an image
+- Changed button layout to allow for simple addition of new buttons in the future in case of new operations
+
 
 <br>________________________________________________________________________________________________
 
