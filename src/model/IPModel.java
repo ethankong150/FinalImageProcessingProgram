@@ -118,10 +118,15 @@ public interface IPModel extends IPModelState {
           throws IllegalArgumentException;
 
   /**
+   * Checks if the desired image is allowed to be the mask image for the desired image -
+   * (checks if all pixels within the image are perfect white 255 255 255 or perfect black 0 0 0
+   * and if the dimensions of both the mask image and the actual image are the same).
    *
-   * @param maskPath
-   * @param imgName
-   * @throws IllegalArgumentException
+   * @param maskPath The path to the image that may serve as the mask image
+   * @param imgName name of the image that is to be modified
+   * @throws IllegalArgumentException if the image and the mask image have different dimensions or
+   *                                  if the mask image contains pixels that aren't
+   *                                  perfect black or white
    */
   void setMaskImage(String maskPath, String imgName) throws IllegalArgumentException;
 }
