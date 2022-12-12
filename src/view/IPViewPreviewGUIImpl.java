@@ -16,7 +16,8 @@ public class IPViewPreviewGUIImpl extends JFrame {
   public IPViewPreviewGUIImpl() {
     this.setTitle("Preview");
     this.setSize(200, 200);
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    this.setResizable(false);
+    this.setDefaultCloseOperation(HIDE_ON_CLOSE);
     
     this.imgLabel = new JLabel();
     JScrollPane scrollImg = new JScrollPane(this.imgLabel);
