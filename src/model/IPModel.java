@@ -129,4 +129,19 @@ public interface IPModel extends IPModelState {
    *                                  perfect black or white
    */
   void setMaskImage(String maskPath, String imgName) throws IllegalArgumentException;
-}
+
+
+  /**
+   * Creates a maskImage for a sectioned window of a given image.
+   *
+   * @param vertP vertical scroll bar percentage
+   * @param horP horizontal scroll bar percentage
+   * @param maxVertP max vertical scroll bar percentage
+   * @param maxHorP max horizontal scroll bar percentage
+   * @param height height of image
+   * @param width width of image
+   */
+  public void previewMaskImage(int vertP, int horP,
+                               int maxVertP, int maxHorP, int height, int width);
+
+  }
