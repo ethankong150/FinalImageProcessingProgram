@@ -1,4 +1,6 @@
 import controller.IPControllerGUI;
+import controller.IPControllerGUIImpl;
+import model.PixelInfo;
 import view.IPViewGUI;
 
 /**
@@ -19,7 +21,7 @@ public class MockIPViewGUIImpl implements IPViewGUI {
   }
 
   @Override
-  public void setControllerGUI(IPControllerGUI controller) throws IllegalArgumentException {
+  public void setControllerGUI(IPControllerGUIImpl controller) throws IllegalArgumentException {
     this.log.append("setControllerGUI called");
   }
 
@@ -35,14 +37,16 @@ public class MockIPViewGUIImpl implements IPViewGUI {
   }
 
   @Override
-  public void drawImage(String imgName) throws IllegalArgumentException {
-    this.log.append("drawImage called with this imgName: " + imgName);
+  public void drawImage(PixelInfo[][] pixels) throws IllegalArgumentException {
+    this.log.append("drawImage called with array of (height, width): " + pixels.length +
+        ", " + pixels[0].length);
   }
 
   @Override
-  public void drawHistogram(String imgName) throws IllegalArgumentException {
-    this.histogramPanel.createHistogramData(imgName);
-    this.log.append("drawHistogram called with this imgName: " + imgName);
+  public void drawHistogram(PixelInfo[][] pixels) throws IllegalArgumentException {
+    this.histogramPanel.createHistogramData(pixels);
+    this.log.append("drawHistogram called with array of (height, width): " + pixels.length +
+        ", " + pixels[0].length);
   }
 
   /**

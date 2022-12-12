@@ -25,7 +25,7 @@ public class ImageProcessing {
   public static void main(String[] args) {
     IPModel model = new IPModelImpl();
     if (args.length == 0) {
-      new IPControllerGUIImpl(model, new IPViewGUIImpl(model)).startIPGUI();
+      new IPControllerGUIImpl(model, new IPViewGUIImpl()).startIPGUI();
     } else {
       IPView view = new IPViewImpl();
       Readable in = null;

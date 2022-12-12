@@ -11,22 +11,17 @@ import static org.junit.Assert.fail;
  */
 public class IPHistogramImplTest {
   IPModel m1 = new IPModelImpl();
-  IPHistogramImpl h1 = new IPHistogramImpl(1, 1, this.m1);
+  IPHistogramImpl h1 = new IPHistogramImpl(1, 1);
 
   // test illegal argument in first constructor
   @Test(expected = IllegalArgumentException.class)
   public void testConstructor1IAE1() {
-    new IPHistogramImpl(0, -1, this.m1);
+    new IPHistogramImpl(0, -1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructor1IAE2() {
-    new IPHistogramImpl(-1, 1, this.m1);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testConstructor1IAE3() {
-    new IPHistogramImpl(1, 1, null);
+    new IPHistogramImpl(-1, 1);
   }
 
   // test createHistgramData does not fail with valid environment
@@ -34,7 +29,7 @@ public class IPHistogramImplTest {
   public void testCreateHistogramData() {
     this.m1.load("res/techsupport.png", "ts");
     try {
-      this.h1.createHistogramData("ts");
+      this.h1.createHistogramData(this.m1.getPixels("ts"));
     } catch (Exception e) {
       fail("you failed");
     }
@@ -43,7 +38,7 @@ public class IPHistogramImplTest {
   // test illegal argument in createHistogramData class
   @Test(expected = IllegalArgumentException.class)
   public void testCreateHistogramDataIAE() {
-    this.h1.createHistogramData("image");
+    this.h1.createHistogramData(this.m1.getPixels("ts"));;
   }
 
 }

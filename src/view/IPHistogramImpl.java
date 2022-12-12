@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import model.IPModel;
 import model.IPModelState.PixelComponents;
+import model.PixelInfo;
 
 import static model.IPModelState.PixelComponents.Blue;
 import static model.IPModelState.PixelComponents.Green;
@@ -26,7 +27,6 @@ public class IPHistogramImpl extends JPanel implements IPHistogram {
   private ArrayList<DataBar> greenBarsData;
   private ArrayList<DataBar> blueBarsData;
   private ArrayList<DataBar> intensityBarsData;
-  private final IPModel model;
   private final int height;
   private final int width;
   
@@ -35,11 +35,10 @@ public class IPHistogramImpl extends JPanel implements IPHistogram {
    *
    * @param height height of each histogram
    * @param width  width of each histogram
-   * @param model  an IPModel object
    * @throws IllegalArgumentException when height or width are negative or if the model is null.
    */
-  public IPHistogramImpl(int height, int width, IPModel model) throws IllegalArgumentException {
-    if (height < 0 || width < 0 || model == null) {
+  public IPHistogramImpl(int height, int width) throws IllegalArgumentException {
+    if (height < 0 || width < 0) {
       throw new IllegalArgumentException("illegal parameter given");
     }
     this.redBarsData = new ArrayList();
@@ -48,7 +47,6 @@ public class IPHistogramImpl extends JPanel implements IPHistogram {
     this.intensityBarsData = new ArrayList();
     this.height = height;
     this.width = width;
-    this.model = model;
     
     this.setPreferredSize(new Dimension(width, height));
     
@@ -97,13 +95,13 @@ public class IPHistogramImpl extends JPanel implements IPHistogram {
   }
   
   @Override
-  public void createHistogramData(String imgName) throws IllegalArgumentException {
+  public void createHistogramData(PixelInfo[][] pixels) throws IllegalArgumentException {
     this.emptyArrayLists();
     
-    Map<Integer, Integer> redData = collectData(Red, imgName);
-    Map<Integer, Integer> greenData = collectData(Green, imgName);
-    Map<Integer, Integer> blueData = collectData(Blue, imgName);
-    Map<Integer, Integer> intensityData = collectData(Intensity, imgName);
+    Map<Integer, Integer> redData = collectData(Red, pixels);
+    Map<Integer, Integer> greenData = collectData(Green, pixels);
+    Map<Integer, Integer> blueData = collectData(Blue, pixels);
+    Map<Integer, Integer> intensityData = collectData(Intensity, pixels);
     
     int max = mostFrequent(redData, greenData, blueData, intensityData);
     
@@ -153,17 +151,17 @@ public class IPHistogramImpl extends JPanel implements IPHistogram {
    * given image.
    *
    * @param component A PixelComponent representing the desired component values.
-   * @param imgName   A String representing the image that should be analyzed for values.
+   * @param pixels   A 2D array representing the image's pixels that should be analyzed for values.
    * @return A Map containing the frequencies of a given component's values.
    * @throws IllegalArgumentException when an image is not found in this model.
    */
-  private Map<Integer, Integer> collectData(PixelComponents component, String imgName)
+  private Map<Integer, Integer> collectData(PixelComponents component, PixelInfo[][] pixels)
       throws IllegalArgumentException {
     Map<Integer, Integer> data = new HashMap<>();
-    for (int i = 0; i < this.model.getHeight(imgName); i++) {
-      for (int j = 0; j < this.model.getWidth(imgName); j++) {
+    for (int i = 0; i < pixels.length; i++) {
+      for (int j = 0; j < pixels[0].length; j++) {
         
-        int currNum = this.model.getPixelInfo(imgName, i, j).get(component);
+        int currNum = pixels[i][j].getPixelInfo().get(component);
         if (data.containsKey(currNum)) {
           data.put(currNum, data.get(currNum) + 1);
         } else {

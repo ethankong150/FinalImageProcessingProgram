@@ -15,13 +15,8 @@ import static org.junit.Assert.fail;
 public class IPViewGUIImplTest {
 
   IPModel model = new IPModelImpl();
-  IPViewGUI viewGUI = new IPViewGUIImpl(this.model);
-
-  // check IAE in first constructor
-  @Test(expected = IllegalArgumentException.class)
-  public void testConstructor1IAE() {
-    new IPViewGUIImpl(null);
-  }
+  IPViewGUI viewGUI = new IPViewGUIImpl();
+  
 
   // check that controllerGUI does not fail with a valid controller
   @Test
@@ -44,7 +39,7 @@ public class IPViewGUIImplTest {
   public void testDrawImage() {
     try {
       this.model.load("res/techsupport.ppm", "ts");
-      this.viewGUI.drawImage("ts");
+      this.viewGUI.drawImage(this.model.getPixels("ts"));
     } catch (Exception e) {
       fail("you failed");
     }
@@ -53,7 +48,7 @@ public class IPViewGUIImplTest {
   // check draw image IAE
   @Test(expected = IllegalArgumentException.class)
   public void testDrawImageIAE() {
-    this.viewGUI.drawImage("ts");
+    this.viewGUI.drawImage(this.model.getPixels("ts"));
   }
 
   // check that draw histogram does not fail with valid environment
@@ -61,7 +56,7 @@ public class IPViewGUIImplTest {
   public void testDrawHistogram() {
     try {
       this.model.load("res/techsupport.ppm", "ts");
-      this.viewGUI.drawHistogram("ts");
+      this.viewGUI.drawHistogram(this.model.getPixels("ts"));
     } catch (Exception e) {
       fail("you failed");
     }
@@ -70,6 +65,6 @@ public class IPViewGUIImplTest {
   // check draw histogram IAE
   @Test(expected = IllegalArgumentException.class)
   public void testDrawHistogramIAE() {
-    this.viewGUI.drawHistogram("ts");
+    this.viewGUI.drawHistogram(this.model.getPixels("ts"));
   }
 }
