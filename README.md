@@ -13,6 +13,7 @@ coupled with the command design pattern that allows for minimal coupling between
 - An additional field (maskImage) added to the IPModelImpl for partial image transformation functionality
    - This allows for all color changing commands to have the partial image transformation functionality 
 - Added support for downsizing an image
+   - No fundamental changes to previous code was needed for the implementation of this operation 
 - Changed button layout to allow for simple addition of new buttons in the future in case of new operations
 
 
