@@ -5,49 +5,38 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
+import javax.swing.*;
+
 import java.awt.Component;
 import java.awt.GridLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.BufferedImageUtils;
 import controller.IPControllerGUI;
+import controller.IPControllerGUIImpl;
+import controller.IPPreviewGUIControllerImpl;
 import model.IPModel;
+import model.PixelInfo;
 
 /**
  * This class represents a view of the IP program with a GUI.
  */
 public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
-
-  private final IPModel model;
-  private IPControllerGUI controllerGUI;
+  
+  private IPControllerGUIImpl controllerGUI;
   private final JLabel imgLabel;
   private final IPHistogram histogramPanel;
   
   /**
    * This first constructor creates the view with a GUI of an IP program.
-   * @throws IllegalArgumentException when the model given is null.
    */
-  public IPViewGUIImpl(IPModel model) throws IllegalArgumentException {
-    if (model == null) {
-      throw new IllegalArgumentException("null model given");
-    }
-    
-    // initialize model
-    this.model = model;
-    
+  public IPViewGUIImpl() {
     // create list of buttons required
     String[] buttons = new String[]{"load", "save", "brighten", "darken", "vertical-flip",
         "horizontal-flip", "red-component", "green-component", "blue-component",
         "value-component", "intensity-component", "luma-component", "blur",
-        "sharpen", "greyscale-luma", "sepia", "downsize"};
+        "sharpen", "greyscale-luma", "sepia", "downsize", "preview"};
     
     // set up JFrame
     this.setTitle("IP Program");
@@ -56,13 +45,13 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
     
     // create the layout of the GUI
     this.setLayout(new GridLayout(1, 2));
-
+    
     //    |-----------------------||-----------------------|
     //    |                       ||    histogramPanel     |
     //    |       imgPanel        ||------rightPanel-------|
     //    |                       ||     buttonsPanel      |
     //    |_______________________||_______________________|
-
+    
     // histogramPanel:
     // top left: red; top right: green; bottom left: blue; bottom right: intensity;
     
@@ -77,7 +66,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
     this.add(rightPanel);
     
     // place panel to top right (for histogram) and make it scrollable
-    this.histogramPanel = new IPHistogramImpl(300, 600, this.model);
+    this.histogramPanel = new IPHistogramImpl(300, 600);
     JScrollPane scrollHisto = new JScrollPane((Component) this.histogramPanel);
     rightPanel.add(scrollHisto);
     
@@ -98,7 +87,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
   }
   
   @Override
-  public void setControllerGUI(IPControllerGUI controller) throws IllegalArgumentException {
+  public void setControllerGUI(IPControllerGUIImpl controller) throws IllegalArgumentException {
     if (controller == null) {
       throw new IllegalArgumentException("controller given is null");
     }
@@ -116,18 +105,18 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
   }
   
   @Override
-  public void drawImage(String imgName) throws IllegalArgumentException {
-    int width = this.model.getWidth(imgName);
-    int height = this.model.getHeight(imgName);
-    BufferedImage img = BufferedImageUtils.createBI(width, height, this.model, imgName);
+  public void drawImage(PixelInfo[][] pixels) throws IllegalArgumentException {
+    int width = pixels[0].length;
+    int height = pixels.length;
+    BufferedImage img = BufferedImageUtils.createBI(width, height, pixels);
     this.imgLabel.setIcon(new ImageIcon(img));
   }
-
+  
   // method that takes in a IPHistogramImpl, gets four drawn histograms, and places them in their
   // respective panels
   @Override
-  public void drawHistogram(String imgName) throws IllegalArgumentException {
-    this.histogramPanel.createHistogramData(imgName);
+  public void drawHistogram(PixelInfo[][] pixels) throws IllegalArgumentException {
+    this.histogramPanel.createHistogramData(pixels);
     this.repaint();
   }
   
@@ -139,15 +128,19 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
     switch (command) {
       case "load":
         specialArgument = this.browseFiles(true);
+        this.controllerGUI.commandHandler(command, specialArgument);
         break;
       case "save":
         specialArgument = this.browseFiles(false);
+        this.controllerGUI.commandHandler(command, specialArgument);
         break;
       case "brighten":
         specialArgument = JOptionPane.showInputDialog("Enter amount to brighten:");
+        this.controllerGUI.commandHandler(command, specialArgument);
         break;
       case "darken":
         specialArgument = JOptionPane.showInputDialog("Enter amount to darken:");
+        this.controllerGUI.commandHandler(command, specialArgument);
         break;
       case "downsize":
         String newHeight = JOptionPane.showInputDialog("Enter percentage of this image's height to " +
@@ -155,11 +148,52 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
         String newWidth = JOptionPane.showInputDialog("Enter percentage of this image's width to " +
             "downsize this image to (must be between 0 and 100):");
         specialArgument = newHeight + " " + newWidth;
+        this.controllerGUI.commandHandler(command, specialArgument);
+        break;
+      case "preview":
+        // drop down menu of what methods are allowed to be previewed (everything except flips, downsize, save, and load)
+        
+        JPanel dropDown = new JPanel();
+        dropDown.add(new JLabel("What would you like to preview:"));
+        DefaultComboBoxModel options = new DefaultComboBoxModel();
+        options.addElement("brighten");
+        options.addElement("darken");
+        options.addElement("red-component");
+        options.addElement("green-component");
+        options.addElement("blue-component");
+        options.addElement("value-component");
+        options.addElement("intensity-component");
+        options.addElement("luma-component");
+        options.addElement("blur");
+        options.addElement("sharpen");
+        options.addElement("greyscale-luma");
+        options.addElement("sepia");
+        JComboBox box = new JComboBox(options);
+        dropDown.add(box);
+        
+        int i = JOptionPane.showConfirmDialog(this, dropDown, "preview command",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        
+        if (i == JOptionPane.OK_OPTION) {
+          String prevCommand = (String) box.getSelectedItem();
+          switch (prevCommand) {
+            case "brighten":
+              specialArgument = JOptionPane.showInputDialog("Enter amount to brighten:");
+              break;
+            case "darken":
+              specialArgument = JOptionPane.showInputDialog("Enter amount to darken:");
+              break;
+            default:
+              break;
+          }
+          IPPreviewGUIControllerImpl c = this.controllerGUI.createPreviewC();
+          c.commandHandler(prevCommand, specialArgument);
+        }
+        
+        break;
       default:
         break;
     }
-    
-    this.controllerGUI.commandHandler(command, specialArgument);
     
   }
   
@@ -170,7 +204,7 @@ public class IPViewGUIImpl extends JFrame implements IPViewGUI, ActionListener {
    * @param load A boolean representing if the method should help a user load an image (true)
    *             or save an image (false)
    * @return A String representing the path of a file that has either been selected to be
-   *         uploaded or the desired saving destination.
+   * uploaded or the desired saving destination.
    */
   private String browseFiles(boolean load) {
     

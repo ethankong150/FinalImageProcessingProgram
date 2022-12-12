@@ -4,21 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.swing.*;
+
 import controller.commands.Brighten;
 import controller.commands.ColorTransformation;
 import controller.commands.Component;
-import controller.commands.Downsize;
 import controller.commands.Filter;
 import controller.commands.Flip;
 import controller.commands.IPCommand;
-import controller.commands.LoadGUI;
 import controller.commands.Matrices;
-import controller.commands.SaveGUI;
 import model.IPModel;
-import view.IPViewGUI;
 import view.IPViewPreviewGUIImpl;
-
-import javax.swing.JOptionPane;
 
 import static model.IPModelState.PixelComponents.Blue;
 import static model.IPModelState.PixelComponents.Green;
@@ -27,45 +23,43 @@ import static model.IPModelState.PixelComponents.Luma;
 import static model.IPModelState.PixelComponents.Red;
 import static model.IPModelState.PixelComponents.Value;
 
-/**
- * This class represents the GUI controller for an IP program.
- */
-public class IPControllerGUIImpl implements IPControllerGUI {
+public class IPPreviewGUIControllerImpl {
   
   private final IPModel model;
-  private final IPViewGUI view;
+  private final IPViewPreviewGUIImpl previewView;
   private final Map<String, Function<String, IPCommand>> commands;
   private final String thisImage;
+  private boolean previewImageExists;
   
-  /**
-   * This first constructor takes a model and ViewGUI and creates a GUI controller
-   * that operates with both objects in cohesion and appropriately.
-   *
-   * @param model An IPModel that represents the model that should be operated on.
-   * @param view  An IPViewGUI that represents the view that should represent the model
-   *              appropriately and display changes made via the controller.
-   * @throws IllegalArgumentException when a given parameter is null.
-   */
-  public IPControllerGUIImpl(IPModel model, IPViewGUI view) throws IllegalArgumentException {
-    if (model == null || view == null) {
+  public IPPreviewGUIControllerImpl(IPModel model, IPViewPreviewGUIImpl previewView)
+      throws IllegalArgumentException {
+    if (model == null || previewView == null) {
       throw new IllegalArgumentException("null parameters given");
     }
     this.model = model;
-    this.view = view;
+    this.previewView = previewView;
     this.commands = new HashMap<>();
     this.loadCommands();
-    this.thisImage = "image";
+    this.thisImage = "previewImage";
+    this.previewImageExists = false;
   }
   
-  @Override
-  public void startIPGUI() {
-    this.view.setControllerGUI(this);
-    this.view.seeGUI();
+  private void createBaselinePreviewImage() {
+    if (!this.previewImageExists) {
+      try {
+        this.model.addImage(this.thisImage, this.model.getPixels("image"));
+        this.previewImageExists = true;
+      } catch (IllegalArgumentException e) {
+        this.renderPopUpMessage("There was a problem: no image loaded yet", "Error",
+            JOptionPane.ERROR_MESSAGE);
+      }
+    }
   }
   
-  @Override
   public void commandHandler(String method, String specialArgument) {
     IPCommand command;
+    
+    this.createBaselinePreviewImage();
     
     Function<String, IPCommand> cmd =
         this.commands.getOrDefault(method, null);
@@ -81,14 +75,10 @@ public class IPControllerGUIImpl implements IPControllerGUI {
         // because command successfully went through, an image exists for sure at this stage
         
         // draw the image
-        this.view.drawImage(this.model.getPixels(this.thisImage));
-        
-        // draw the histogram
-        this.view.drawHistogram(this.model.getPixels(this.thisImage));
-        
-        // give a success message
-        this.renderPopUpMessage(method + " success!", "Success",
-            JOptionPane.INFORMATION_MESSAGE);
+        this.previewView.drawImage(this.model.getPixels(this.thisImage));
+  
+        // show preview gui
+        this.previewView.seeGUI();
         
       } catch (IllegalArgumentException e) {
         if (!e.getMessage().equals("command was canceled")) {
@@ -108,11 +98,7 @@ public class IPControllerGUIImpl implements IPControllerGUI {
    *              error, etc)
    */
   private void renderPopUpMessage(String body, String title, int type) {
-    this.view.renderPopUpMessage(body, title, type);
-  }
-  
-  public IPPreviewGUIControllerImpl createPreviewC() {
-    return new IPPreviewGUIControllerImpl(this.model, new IPViewPreviewGUIImpl());
+    this.previewView.renderPopUpMessage(body, title, type);
   }
   
   /**
@@ -135,23 +121,11 @@ public class IPControllerGUIImpl implements IPControllerGUI {
     }
   }
   
-  /**
-   * This method loads all valid commands into the commands Map for this controller.
-   */
   private void loadCommands() {
-    
-    this.commands.put("load", str ->
-        new LoadGUI(str, this.thisImage));
-    this.commands.put("save", str ->
-        new SaveGUI(str, this.thisImage));
     this.commands.put("brighten", str ->
         new Brighten(parseInt(str), this.thisImage, this.thisImage));
     this.commands.put("darken", str ->
         new Brighten(parseInt(str) * -1, this.thisImage, this.thisImage));
-    this.commands.put("vertical-flip", str ->
-        new Flip(true, this.thisImage, this.thisImage));
-    this.commands.put("horizontal-flip", str ->
-        new Flip(false, this.thisImage, this.thisImage));
     this.commands.put("red-component", str ->
         new Component(Red, this.thisImage, this.thisImage));
     this.commands.put("green-component", str ->
@@ -172,14 +146,5 @@ public class IPControllerGUIImpl implements IPControllerGUI {
         new ColorTransformation(Matrices.greyscaleluma, this.thisImage, this.thisImage));
     this.commands.put("sepia", str ->
         new ColorTransformation(Matrices.sepia, this.thisImage, this.thisImage));
-    this.commands.put("downsize", str -> {
-      String[] percentHeightWidth = str.split("\\s+");
-      if (percentHeightWidth.length != 2)  {
-        throw new IllegalArgumentException("invalid inputs for downsizing");
-      }
-      int newHeight = parseInt(percentHeightWidth[0]);
-      int newWidth = parseInt(percentHeightWidth[1]);
-      return new Downsize(newHeight, newWidth, this.thisImage, this.thisImage);
-    });
   }
 }

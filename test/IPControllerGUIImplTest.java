@@ -15,8 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class IPControllerGUIImplTest {
   IPModel model = new IPModelImpl();
-  IPViewGUI view = new IPViewGUIImpl(this.model);
-  IPControllerGUI controller = new IPControllerGUIImpl(this.model, this.view);
+  IPViewGUI view = new IPViewGUIImpl();
 
   MockIPViewGUIImpl mockView = new MockIPViewGUIImpl();
   IPControllerGUI mockController = new IPControllerGUIImpl(this.model, this.mockView);
@@ -46,11 +45,11 @@ public class IPControllerGUIImplTest {
   @Test
   public void testCommandHandlerGoodArgumentsLoad() {
     this.mockController.commandHandler("load", "res/techsupport.ppm");
-    assertEquals("drawImage called with this imgName: image" +
-            "drawHistogram called with this imgName: image" +
-            "renderPopUpMessage called with this body, title, and type: " +
-            "load success!, Success, 1", this.mockView.getLog());
-    assertEquals("createHistogramData with this imgName: image",
+    assertEquals("drawImage called with array of (height, width): 188, 250" +
+        "drawHistogram called with array of (height, width): 188, 250" +
+        "renderPopUpMessage called with this body, title, and type: load success!, " +
+        "Success, 1", this.mockView.getLog());
+    assertEquals("createHistogramData with array of (height, width): 188, 250",
             this.mockView.getHistogramLog());
   }
 
@@ -58,11 +57,11 @@ public class IPControllerGUIImplTest {
   public void testCommandHandlerGoodArgumentsBrighten() {
     this.model.load("res/techsupport.ppm", "image");
     this.mockController.commandHandler("brighten", "50");
-    assertEquals("drawImage called with this imgName: image" +
-            "drawHistogram called with this imgName: image" +
-            "renderPopUpMessage called with this body, title, and type: " +
-            "brighten success!, Success, 1", this.mockView.getLog());
-    assertEquals("createHistogramData with this imgName: image",
+    assertEquals("drawImage called with array of (height, width): 188, 250" +
+        "drawHistogram called with array of (height, width): 188, 250" +
+        "renderPopUpMessage called with this body, title, and type: brighten success!, " +
+        "Success, 1", this.mockView.getLog());
+    assertEquals("createHistogramData with array of (height, width): 188, 250",
             this.mockView.getHistogramLog());
   }
 
@@ -70,11 +69,11 @@ public class IPControllerGUIImplTest {
   public void testCommandHandlerGoodArgumentsSepia1() {
     this.model.load("res/techsupport.ppm", "image");
     this.mockController.commandHandler("sepia", "");
-    assertEquals("drawImage called with this imgName: image" +
-            "drawHistogram called with this imgName: image" +
-            "renderPopUpMessage called with this body, title, and type: " +
-            "sepia success!, Success, 1", this.mockView.getLog());
-    assertEquals("createHistogramData with this imgName: image",
+    assertEquals("drawImage called with array of (height, width): 188, 250" +
+        "drawHistogram called with array of (height, width): 188, 250" +
+        "renderPopUpMessage called with this body, title, and type: sepia success!, " +
+        "Success, 1", this.mockView.getLog());
+    assertEquals("createHistogramData with array of (height, width): 188, 250",
             this.mockView.getHistogramLog());
   }
 
@@ -82,11 +81,11 @@ public class IPControllerGUIImplTest {
   public void testCommandHandlerGoodArgumentsSepia2() {
     this.model.load("res/techsupport.ppm", "image");
     this.mockController.commandHandler("sepia", "doesn't matter");
-    assertEquals("drawImage called with this imgName: image" +
-            "drawHistogram called with this imgName: image" +
-            "renderPopUpMessage called with this body, title, and type: " +
-            "sepia success!, Success, 1", this.mockView.getLog());
-    assertEquals("createHistogramData with this imgName: image",
+    assertEquals("drawImage called with array of (height, width): 188, 250" +
+        "drawHistogram called with array of (height, width): 188, 250" +
+        "renderPopUpMessage called with this body, title, and type: sepia success!, " +
+        "Success, 1", this.mockView.getLog());
+    assertEquals("createHistogramData with array of (height, width): 188, 250",
             this.mockView.getHistogramLog());
   }
 

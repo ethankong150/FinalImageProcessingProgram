@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 
 import model.IPModel;
 import model.IPModelState;
+import model.PixelInfo;
 
 import static model.IPModelState.PixelComponents.Blue;
 import static model.IPModelState.PixelComponents.Green;
@@ -42,19 +43,17 @@ public class BufferedImageUtils {
    *
    * @param width   An integer representing the width of the image.
    * @param height  An integer representing the height of the image.
-   * @param model   An IPModel representing the model to find the desired image in.
-   * @param imgName A String representing the name of the desired image.
+   * @param pixels A 2D array representing the pixels of the desired image.
    * @return A buffered image of the desired image from the model.
    * @throws IllegalArgumentException if the given imgName does not exist in the given model.
    */
-  public static BufferedImage createBI(int width, int height, IPModel model, String imgName)
+  public static BufferedImage createBI(int width, int height, PixelInfo[][] pixels)
           throws IllegalArgumentException {
     BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        Map<IPModelState.PixelComponents, Integer> thisPixelInfo =
-            model.getPixelInfo(imgName, i, j);
+        Map<IPModelState.PixelComponents, Integer> thisPixelInfo = pixels[i][j].getPixelInfo();
         int red = thisPixelInfo.get(Red);
         int green = thisPixelInfo.get(Green);
         int blue = thisPixelInfo.get(Blue);

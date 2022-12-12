@@ -1,6 +1,8 @@
 package view;
 
 import controller.IPControllerGUI;
+import controller.IPControllerGUIImpl;
+import model.PixelInfo;
 
 /**
  * Represents an interface for a view of the IP program's GUI.
@@ -15,7 +17,7 @@ public interface IPViewGUI {
    *                   should be linked to the view.
    * @throws IllegalArgumentException when the given controller is null.
    */
-  void setControllerGUI(IPControllerGUI controller) throws IllegalArgumentException;
+  void setControllerGUI(IPControllerGUIImpl controller) throws IllegalArgumentException;
 
   /**
    * This method allows the GUI to be seen by setting it to be visible with a
@@ -37,19 +39,19 @@ public interface IPViewGUI {
    * This method retrieves an image from the view's model based on the given String and draws it
    * onto the GUI for the user to see.
    *
-   * @param imgName A String representing the name of the desired image to draw onto the GUI.
+   * @param pixels A 2D array representing the pixels of the desired image to draw onto the GUI.
    * @throws IllegalArgumentException when the given String name cannot be found in
    *                                  the view's model.
    */
-  void drawImage(String imgName) throws IllegalArgumentException;
+  void drawImage(PixelInfo[][] pixels) throws IllegalArgumentException;
 
   /**
    * This method retrieves an image from the view's model based on the given String and draws a
    * histogram of the red, green, blue, and intensity values onto the GUI for the user to see.
    *
-   * @param imgName A String representing the name of the desired image to draw onto the GUI.
+   * @param pixels A 2D array representing the pixels of the desired image to draw onto the GUI.
    * @throws IllegalArgumentException when the given String name cannot be found in
    *                                  the view's model.
    */
-  void drawHistogram(String imgName) throws IllegalArgumentException;
+  void drawHistogram(PixelInfo[][] pixels) throws IllegalArgumentException;
 }

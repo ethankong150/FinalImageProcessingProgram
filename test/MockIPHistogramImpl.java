@@ -1,3 +1,4 @@
+import model.PixelInfo;
 import view.IPHistogram;
 
 /**
@@ -14,8 +15,9 @@ public class MockIPHistogramImpl implements IPHistogram {
   }
 
   @Override
-  public void createHistogramData(String imgName) throws IllegalArgumentException {
-    this.log.append("createHistogramData with this imgName: " + imgName);
+  public void createHistogramData(PixelInfo[][] pixels) throws IllegalArgumentException {
+    this.log.append("createHistogramData with array of (height, width): " + pixels.length +
+        ", " + pixels[0].length);
   }
 
   /**

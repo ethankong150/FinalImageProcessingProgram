@@ -237,7 +237,7 @@ public class IPModelImpl implements IPModel {
   private void saveElse(String path, String imgName, int height, int width)
       throws IllegalArgumentException {
     
-    BufferedImage img = BufferedImageUtils.createBI(width, height, this, imgName);
+    BufferedImage img = BufferedImageUtils.createBI(width, height, this.getPixels(imgName));
     
     try {
       FileOutputStream f = new FileOutputStream(path);
@@ -630,5 +630,12 @@ public class IPModelImpl implements IPModel {
   // resets the mask image to null after a partial image manipulation command is finished
   private void resetMaskImage() {
     this.maskImage = null;
+  }
+  
+  @Override
+  public PixelInfo[][] getPixels(String imgName) {
+    this.imageExists(imgName);
+    
+    return this.addedImages.get(imgName);
   }
 }

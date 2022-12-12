@@ -49,4 +49,12 @@ public interface IPModelState {
    */
   Map<PixelComponents, Integer> getPixelInfo(String imgName, int row, int col)
       throws IllegalArgumentException;
+  
+  /**
+   * This method gets the 2D array of pixels of the image represented by the given String name.
+   * @param imgName A String representing the name of the specified image.
+   * @return A 2D array of pixels of the image.
+   * @throws IllegalArgumentException when the image does not exist in the added Images field.
+   */
+  public PixelInfo[][] getPixels(String imgName) throws IllegalArgumentException;
 }

@@ -22,7 +22,7 @@ public class BufferedImageUtilsTest {
   @Test(expected = IllegalArgumentException.class)
   public void testCreateBIIAE() {
     IPModel m = new IPModelImpl();
-    createBI(5, 5, m, "wow");
+    createBI(5, 5, m.getPixels("wow"));
   }
 
   @Test
@@ -36,7 +36,7 @@ public class BufferedImageUtilsTest {
   public void testCreateBI() {
     IPModel m = new IPModelImpl();
     m.load("res/image1.ppm", "i1");
-    BufferedImage img = createBI(2, 3, m, "i1");
+    BufferedImage img = createBI(2, 3, m.getPixels("i1"));
     assertEquals(img.getWidth(), 2);
     assertEquals(img.getHeight(), 3);
   }
@@ -46,7 +46,7 @@ public class BufferedImageUtilsTest {
     BufferedImage b1 = turnIntoBI("res/image1.png");
     IPModel m = new IPModelImpl();
     m.load("res/image1.ppm", "i1");
-    BufferedImage b2 = createBI(2, 3, m, "i1");
+    BufferedImage b2 = createBI(2, 3, m.getPixels("i1"));
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 2; j++) {
         assertEquals(b1.getRGB(j, i), b2.getRGB(j, i));
