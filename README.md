@@ -12,8 +12,9 @@ coupled with the command design pattern that allows for minimal coupling between
 
 - An additional field (maskImage) added to the IPModelImpl for partial image transformation functionality
    - This allows for all color changing commands to have the partial image transformation functionality 
+   - To allow for this functionality, slight adjustments were made in all methods. Essentially, whenever one of the color change methods attempts to adjust an individual pixel, the method will now check if there is a masked image set. If there isn't any masked image set, the operation will make the color change. If there is a masked image set, a helper will check if the corresponding pixel in the masked image is black. And, if the im pixel is black, the color change will occur. This can be seen in brighten(), colorTransformation(), filter() and greyscale().
 - Added support for downsizing an image
-   - No fundamental changes to previous code was needed for the implementation of this operation 
+   - No fundamental changes to previous code was needed for the implementation of this operation  
 - Changed button layout to allow for simple addition of new buttons in the future in case of new operations
 
 
