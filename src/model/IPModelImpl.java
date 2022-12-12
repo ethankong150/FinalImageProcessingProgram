@@ -618,6 +618,32 @@ public class IPModelImpl implements IPModel {
     this.maskImage = potentialMask;
   }
 
+  public void previewMaskImage(int vertP, int horP, int maxVertP, int maxHorP, int height, int width) {
+
+    int vertFactor = (int) (((double) height - 200.00) / 100.00);
+    int horFactor = (int) (((double) width - 200.00) / 100.00);
+
+    int topLeftVert = vertP * vertFactor;
+    int topLeftHor = horP * horFactor;
+
+    int bottomRightVert = topLeftVert + 199;
+    int bottomRightHor = topLeftHor + 199;
+
+    PixelInfo[][] maskImage = new PixelInfo[height][width];
+
+    for(int i = 0; i < height; i++) {
+      for(int j = 0; j < width; j++) {
+
+        if (i >= topLeftVert && i <= bottomRightVert && j >= topLeftHor && j <= bottomRightHor) {
+          maskImage[i][j] = new PixelInfo(0,0,0,0);
+        } else {
+          maskImage[i][j] = new PixelInfo(255,255,255,255);
+        }
+      }
+    }
+    this.maskImage = maskImage;
+  }
+
   // checks if a pixel is black (perfect black 0 0 0)
   private boolean maskImageBlack(int row, int col) {
     Map<PixelComponents, Integer> thisPixel = this.maskImage[row][col].getPixelInfo();
