@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,6 +31,8 @@ public class IPPreviewGUIControllerImpl {
   private final Map<String, Function<String, IPCommand>> commands;
   private final String thisImage;
   private boolean previewImageExists;
+  private Function<String, IPCommand> command;
+  private String specialArgument;
   
   public IPPreviewGUIControllerImpl(IPModel model, IPViewPreviewGUIImpl previewView)
       throws IllegalArgumentException {
@@ -42,6 +45,9 @@ public class IPPreviewGUIControllerImpl {
     this.loadCommands();
     this.thisImage = "previewImage";
     this.previewImageExists = false;
+    this.previewView.connect(this);
+    this.command = null;
+    this.specialArgument = "";
   }
   
   private void createBaselinePreviewImage() {
@@ -56,10 +62,26 @@ public class IPPreviewGUIControllerImpl {
     }
   }
   
+  public void updatePreviewImage(ArrayList<Integer> barInfo) {
+    this.model.previewMaskImage(barInfo.get(0), barInfo.get(1), this.model.getPixels("image").length,
+        this.model.getPixels("image")[0].length);
+    
+    System.out.println("preview gui " + barInfo.get(0) + " " +  barInfo.get(1) + " "
+        + barInfo.get(2) + " " + barInfo.get(3));
+    
+    IPCommand c = this.command.apply(this.specialArgument);
+    c.execute(this.model);
+    this.previewView.drawImage(this.model.getPixels(this.thisImage));
+  }
+  
   public void commandHandler(String method, String specialArgument) {
     IPCommand command;
     
     this.createBaselinePreviewImage();
+    
+    this.model.previewMaskImage(0, 0,
+        this.model.getPixels("image").length,
+        this.model.getPixels("image")[0].length);
     
     Function<String, IPCommand> cmd =
         this.commands.getOrDefault(method, null);
@@ -72,6 +94,10 @@ public class IPPreviewGUIControllerImpl {
       try {
         command = cmd.apply(specialArgument);
         command.execute(this.model);
+        
+        this.command = cmd;
+        this.specialArgument = specialArgument;
+        
         // because command successfully went through, an image exists for sure at this stage
         
         // draw the image
