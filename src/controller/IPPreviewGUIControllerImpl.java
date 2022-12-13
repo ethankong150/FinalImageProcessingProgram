@@ -11,7 +11,6 @@ import controller.commands.Brighten;
 import controller.commands.ColorTransformation;
 import controller.commands.Component;
 import controller.commands.Filter;
-import controller.commands.Flip;
 import controller.commands.IPCommand;
 import controller.commands.Matrices;
 import model.IPModel;
@@ -24,7 +23,10 @@ import static model.IPModelState.PixelComponents.Luma;
 import static model.IPModelState.PixelComponents.Red;
 import static model.IPModelState.PixelComponents.Value;
 
-public class IPPreviewGUIControllerImpl {
+/**
+ * This class represents a controller for the PreviewGUI
+ */
+public class IPPreviewGUIControllerImpl implements IPControllerGUI {
   
   private final IPModel model;
   private final IPViewPreviewGUIImpl previewView;
@@ -34,6 +36,13 @@ public class IPPreviewGUIControllerImpl {
   private Function<String, IPCommand> command;
   private String specialArgument;
   
+  /**
+   * This first constructor creates a preview GUI controller object given a model and previewGUI
+   * view.
+   * @param model An IPModel object representing the model.
+   * @param previewView A IPViewPreviewGUIImpl object representing the view.
+   * @throws IllegalArgumentException if null parameters are given.
+   */
   public IPPreviewGUIControllerImpl(IPModel model, IPViewPreviewGUIImpl previewView)
       throws IllegalArgumentException {
     if (model == null || previewView == null) {
@@ -66,12 +75,14 @@ public class IPPreviewGUIControllerImpl {
     this.model.previewMaskImage(barInfo.get(0), barInfo.get(1), this.model.getPixels("image").length,
         this.model.getPixels("image")[0].length);
     
-    System.out.println("preview gui " + barInfo.get(0) + " " +  barInfo.get(1) + " "
-        + barInfo.get(2) + " " + barInfo.get(3));
-    
     IPCommand c = this.command.apply(this.specialArgument);
     c.execute(this.model);
     this.previewView.drawImage(this.model.getPixels(this.thisImage));
+  }
+  
+  @Override
+  public void startIPGUI() {
+    this.previewView.seeGUI();
   }
   
   public void commandHandler(String method, String specialArgument) {

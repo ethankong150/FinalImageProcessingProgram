@@ -52,7 +52,6 @@ public class IPViewPreviewGUIImpl extends JFrame implements AdjustmentListener {
   }
   
   public ArrayList<Integer> getBarInfo() {
-    // ArrayList -> [0] horiBar getValue(), [1] horiBar getMaximum(), [2] vertBar getValue(), [3] vertBar getMaximum()
     ArrayList<Integer> output = new ArrayList<>(4);
     output.add(this.vertBar.getValue());
     output.add(this.horiBar.getValue());

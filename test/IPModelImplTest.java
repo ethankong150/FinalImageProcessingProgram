@@ -2236,4 +2236,18 @@ public class IPModelImplTest {
     this.m1.addImage("image1", this.i1);
     this.m1.setMaskImage("res/image1dupe.png", "image1");
   }
+  
+  @Test
+  public void testPreviewMaskImage(){
+    this.m1.addImage("image1", this.i1);
+    this.m1.previewMaskImage(0, 0,3, 2);
+    this.m1.brighten(1000, "image1", "image1b");
+    
+    int red = this.m1.getPixelInfo("image1b", 0, 0).get(Red);
+    assertEquals(red, 255);
+    int green = this.m1.getPixelInfo("image1b", 0, 0).get(Green);
+    assertEquals(green, 255);
+    int blue = this.m1.getPixelInfo("image1b", 0, 0).get(Blue);
+    assertEquals(blue, 255);
+  }
 }
