@@ -619,7 +619,10 @@ public class IPModelImpl implements IPModel {
   }
 
   public void previewMaskImage(int vertVal, int horVal, int maxVertVal, int maxHorVal) {
-
+    
+    System.out.println("model " + vertVal + " " + horVal + " " + maxVertVal + " " + maxHorVal);
+    
+    
     PixelInfo[][] maskImage = new PixelInfo[maxVertVal][maxHorVal];
 
     int bottomRightVert = vertVal + 199;
