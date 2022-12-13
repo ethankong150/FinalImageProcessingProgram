@@ -1,4 +1,7 @@
 load res/techsupport.ppm ts
+load res/techsupport.png tspng
+load res/techsupport.jpg tsjpg
+load res/image1.png i1
 
 brighten 66 ts tsbrighten
 brighten -66 ts tsdarken
@@ -19,6 +22,21 @@ sharpen ts tssharp
 greyscale-luma ts tsgreyscaleluma
 sepia ts tssepia
 
+downsize 50 50 tspng tspngdown
+downsize 25 75 tsjpg tsjpgdown
+
+partial-red-component res/image1mask.png i1 i1partred
+partial-green-component res/image1mask.png i1 i1partgreen
+partial-blue-component res/image1mask.png i1 i1partblue
+partial-value-component res/image1mask.png i1 i1partvalue
+partial-intensity-component res/image1mask.png i1 i1partintensity
+partial-luma-component res/image1mask.png i1 i1partluma
+partial-brighten res/image1mask.png -1000 i1 i1partbrighten
+partial-blur res/image1mask.png i1 i1partblur
+partial-sharpen res/image1mask.png i1 i1partsharpen
+partial-greyscale-luma res/image1mask.png i1 i1partgreyscaleluma
+partial-sepia res/image1mask.png i1 i1partsepia
+
 save res/techsupportbrighten.ppm tsbrighten
 save res/techsupportdarken.ppm tsdarken
 save res/techsupportvertical.ppm tsvert
@@ -33,5 +51,19 @@ save res/techsupportblur.bmp tsblur
 save res/techsupportsharpen.jpg tssharp
 save res/techsupportgreyscaleluma.png tsgreyscaleluma
 save res/techsupportsepia.jpeg tssepia
+save res/techsupportdownsize.png tspngdown
+save res/techsupportdownsize.jpg tsjpgdown
+
+save res/techsupportpartred.png i1partred
+save res/techsupportpartgreen.png i1partgreen
+save res/techsupportpartblue.png i1partblue
+save res/techsupportpartvalue.png i1partvalue
+save res/techsupportpartintensity.png i1partintensity
+save res/techsupportpartluma.png i1partluma
+
+save res/techsupportpartbrighten.png i1partbrighten
+save res/techsupportpartsharpen.png i1partsharpen
+save res/techsupportpartgreyscaleluma.png i1partgreyscaleluma
+save res/techsupportpartsepia.png i1partsepia
 
 q
